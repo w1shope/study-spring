@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static study.querydsl.entity.QMember.member;
 import static study.querydsl.entity.QTeam.team;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +16,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
 import java.util.List;
-import org.aspectj.weaver.ast.Expr;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+import study.querydsl.dto.MemberDto;
+import study.querydsl.dto.QMemberDto;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.Team;
 
@@ -309,7 +313,6 @@ public class QueryDslBasicTest {
             .leftJoin(member.team, team).on(team.name.eq("teamA"))
             .fetch();
 
-
         //then
         for (Tuple tuple : result) {
             System.out.println("tuple = " + tuple);
@@ -328,7 +331,8 @@ public class QueryDslBasicTest {
         //when
         List<Tuple> result = queryFactory.select(member, team)
             .from(member)
-            .leftJoin(team).on(member.username.eq(team.name)) // leftJoin(member.team, team) -> X (이것은 연관관계 조인)
+            .leftJoin(team)
+            .on(member.username.eq(team.name)) // leftJoin(member.team, team) -> X (이것은 연관관계 조인)
             .fetch();
 
         //then
@@ -456,11 +460,218 @@ public class QueryDslBasicTest {
     void add_concat() {
         //given
         //when
-        String result = queryFactory.select(member.username.concat("_").concat(member.age.stringValue()))
+        String result = queryFactory.select(
+                member.username.concat("_").concat(member.age.stringValue()))
             .from(member)
             .where(member.username.eq("member1"))
             .fetchOne();
         //then
         assertThat(result).isEqualTo("member1_10");
     }
+
+    // select()에 조회하려고 하는 필드가 1개일 때는 필드의 타입을 반환
+    @Test
+    @DisplayName("QueryDsl - basic_projection")
+    void basicProjection() {
+        //given
+        //when
+        List<String> result = queryFactory.select(member.username)
+            .from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    // select()에 조회하려고 하는 필드 2개 이상 사용 시에 tuple을 반환
+    @Test
+    @DisplayName("QueryDsl - tuple_projection")
+    void tupleProjection() {
+        //given
+        //when
+        List<Tuple> result = queryFactory.select(member.username, member.age)
+            .from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("JPA - dto_projection")
+    void jpa_dto_projection() {
+        //given
+        //when
+        List<MemberDto> result = em.createQuery(
+                "select new study.querydsl.dto.MemberDto(m.username, m.age) from Member m",
+                MemberDto.class)
+            .getResultList();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - property_projection")
+    void property_projection() {
+        //given
+        //when
+        List<MemberDto> result = queryFactory.select(
+                Projections.bean(MemberDto.class, member.username, member.age)
+            ).from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - field_projection")
+    void field_projection() {
+        //given
+        //when
+        List<MemberDto> result = queryFactory.select(
+                Projections.fields(MemberDto.class, member.username, member.age)
+            ).from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - field_projection_alias_problem")
+    void field_projection_alias_problem() {
+        //given
+        //when
+        List<MemberDto> result = queryFactory.select(
+                Projections.fields(MemberDto.class, member.username.as("name"), member.age)
+            ).from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - constructor_projection")
+    void constructor_projection() {
+        //given
+        //when
+        List<MemberDto> result = queryFactory.select(
+                Projections.constructor(MemberDto.class, member.username, member.age, member.id)
+            ).from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - @QueryProjection")
+    void annotation_query_projection() {
+        //given
+        //when
+        List<MemberDto> result = queryFactory.select(
+                new QMemberDto(member.username, member.age)
+            ).from(member)
+            .fetch();
+
+        //then
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - dynamic_query_BooleanBuilder")
+    void dynamic_query_booleanBuilder() {
+        //given
+        String username = "member1";
+        Integer age = 10;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        if (username != null) {
+            builder.and(member.username.eq(username));
+        }
+        if (age != null) {
+            builder.and(member.age.eq(age));
+        }
+
+        //when
+        List<Member> result = queryFactory.selectFrom(member)
+            .where(builder)
+            .fetch();
+
+        //then
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getUsername()).isEqualTo("member1");
+        assertThat(result.get(0).getAge()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("QueryDsl - dynamic_query_BooleanExpression")
+    void dynamic_query_whereParam() {
+        //given
+        String username = null;
+        Integer age = 20;
+
+        BooleanExpression expression1 = username != null ? member.username.eq(username) : null;
+        BooleanExpression expression2 = age != null ? member.age.goe(age) : null;
+
+        //when
+        List<Member> result = queryFactory.selectFrom(member)
+            .where(expression1, expression2) // where절은 null을 무시한다.
+            .fetch();
+
+        //then
+        assertThat(result.size()).isEqualTo(3); // age = 20, 30, 40
+    }
+
+    @Test
+    @DisplayName("QuestDsl - bulk_operation_problem")
+    void bulk_operation_problem() {
+        //given
+        //when
+        long count = queryFactory.update(member)
+            .set(member.age, 20)
+            .where(member.age.goe(10))
+            .execute();
+
+        List<Member> result = queryFactory.selectFrom(member)
+            .fetch();
+
+        //then
+        // 영속성 컨텍스트에 저장된 데이터를 반환한다. => DB에서 조회되는 데이터와 다른 값을 반환한다.
+        assertThat(result.get(0).getAge()).isEqualTo(10);
+        assertThat(result.get(1).getAge()).isEqualTo(20);
+        assertThat(result.get(2).getAge()).isEqualTo(30);
+        assertThat(result.get(3).getAge()).isEqualTo(40);
+        assertThat(count).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("QuestDsl - bulk_operation")
+    void bulk_operation() {
+        //given
+        //when
+        long count = queryFactory.update(member)
+            .set(member.age, 20)
+            .where(member.age.goe(10))
+            .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = queryFactory.selectFrom(member)
+            .fetch();
+
+        //then
+        // 영속성 컨텍스트에 저장된 데이터를 반환한다. => DB에서 조회되는 데이터와 다른 값을 반환한다.
+        assertThat(result.get(0).getAge()).isEqualTo(20);
+        assertThat(result.get(1).getAge()).isEqualTo(20);
+        assertThat(result.get(2).getAge()).isEqualTo(20);
+        assertThat(result.get(3).getAge()).isEqualTo(20);
+        assertThat(count).isEqualTo(4);
+    }
+
+
 }
