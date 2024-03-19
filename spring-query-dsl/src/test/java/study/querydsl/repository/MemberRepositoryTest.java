@@ -24,6 +24,8 @@ class MemberRepositoryTest {
     MemberJpaRepository memberJpaRepository;
     @Autowired
     MemberQueryDslRepository memberQueryDslRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
     @Test
     @DisplayName("JPA로 회원 저장 및 조회")
@@ -104,6 +106,33 @@ class MemberRepositoryTest {
         request.setAgeLoe(30);
 
         List<MemberTeamDto> result = memberQueryDslRepository.searchByWhereParam(request);
+        assertThat(result).extracting("username").containsExactly("member1", "member2");
+    }
+
+    @Test
+    @DisplayName("Custom Repository Test")
+    void customRepository() {
+
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        em.persist(teamA);
+        em.persist(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 20, teamA);
+        Member member3 = new Member("member3", 30, teamB);
+        Member member4 = new Member("member4", 40, teamB);
+        em.persist(member1);
+        em.persist(member2);
+        em.persist(member3);
+        em.persist(member4);
+
+        MemberSearchRequestDto request = new MemberSearchRequestDto();
+        request.setTeamName("teamA");
+        request.setAgeGoe(10);
+        request.setAgeLoe(30);
+
+        List<MemberTeamDto> result = memberRepository.search(request);
         assertThat(result).extracting("username").containsExactly("member1", "member2");
     }
 }
