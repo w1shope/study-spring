@@ -1,0 +1,5 @@
+spring:
+  security:
+    user:
+      name: eazybytes
+      password: 12345
