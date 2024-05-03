@@ -14,7 +14,7 @@ public class AccountController {
     private final AccountsRepository accountsRepository;
 
     @GetMapping("/myAccount")
-    public Accounts getAccountDetails(@RequestParam Long accountId) {
-        return accountsRepository.findByCustomerId(accountId);
+    public Accounts getAccountDetails(@RequestParam Long id) {
+        return accountsRepository.findByCustomerId(id);
     }
 }
