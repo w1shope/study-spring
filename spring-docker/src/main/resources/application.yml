@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/example
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update # application 실행 시 기존 테이블 drop 후 create
+    properties:
+      hibernate:
+        format_sql: true

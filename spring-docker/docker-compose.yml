@@ -1,0 +1,20 @@
+version: '3.7'  # Docker Compose의 버전
+
+services:  # Docker Compose를 통해 실행할 서비스(컨테이너) 정의
+  db:  # 데이터베이스 서비스의 이름
+    image: mysql:8.0  # 사용할 MySQL 버전 8.0 이미지
+    restart: always
+    container_name: mysql_container  # 생성될 도커 컨테이너의 이름
+    environment:  # MySQL 컨테이너에 필요한 환경 변수 설정
+      MYSQL_DATABASE: example  # 생성할 데이터베이스의 이름
+      MYSQL_USER: hope # 생성할 사용자
+      MYSQL_PASSWORD: hope1234 # 사용자 비밀번호
+      MYSQL_ROOT_PASSWORD: 1234  # MySQL 루트 사용자의 비밀번호 설정
+    ports:  # 호스트와 컨테이너 간의 포트 매핑
+      - "3307:3306"  # 호스트의 포트 3307을 컨테이너의 포트 3306으로 매핑
+    volumes:  # 호스트의 디렉토리를 컨테이너에 마운트
+      - mysql_data:/var/lib/mysql  # mysql_data 볼륨을 컨테이너의 /var/lib/mysql에 마운트
+
+
+volumes:  # 도커 볼륨 정의
+  mysql_data:  # MySQL 데이터베이스의 데이터를 저장할 볼륨
