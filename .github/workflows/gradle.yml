@@ -21,9 +21,9 @@ jobs:
         distribution: 'temurin'
 
     - name: Grant execute permission for gradlew
-      run: chmod +x ./spring-devops/gradlew
-      working-directory: ./study-spring
+      run: chmod +x ./gradlew
+      working-directory: ${{ github.workspace }}/spring-devops
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
-      working-directory: ./study-spring/spring-devops
+      working-directory: ${{ github.workspace }}/spring-devops
