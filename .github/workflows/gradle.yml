@@ -31,6 +31,10 @@ jobs:
     # - name: Change directory to spring-devops
     #   run: cd spring-devops
 
+    - name: Build with Gradle Wrapper and Show Warnings
+      run: ./gradlew build --warning-mode all
+
+
     - name: Build with Gradle in spring-devops directory
       run: |
         cd spring-devops
