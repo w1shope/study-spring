@@ -22,8 +22,8 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
-      working-directory: ${{ github.workspace }}/spring-devops
+      working-directory: ./spring-devops
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
-      working-directory: ${{ github.workspace }}/spring-devops
+      working-directory: ./spring-devops
