@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
+      run: chmod +x ./spring-devops/gradlew
 
     - name: Build with Gradle Wrapper
       run: ./spring-devops/gradlew build
