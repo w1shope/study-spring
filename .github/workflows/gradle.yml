@@ -27,3 +27,12 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build
       working-directory: ./spring-devops
+      env:
+        AWS_RDS: ${{ secrets.AWS_RDS }}
+        AWS_RDS_USERNAME: ${{ secrets.AWS_RDS_USERNAME }}
+        AWS_RDS_PASSWORD: ${{ secrets.AWS_RDS_PASSWORD }}
+        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        
