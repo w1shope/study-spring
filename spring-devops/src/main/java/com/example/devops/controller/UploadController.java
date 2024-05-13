@@ -6,9 +6,8 @@ import com.example.devops.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +35,8 @@ public class UploadController {
      * GET : 화면에 사용자의 프로필 이미지를 보여주기 위한 PresignedUrl을 발급한다.
      * PUT : 클라이언트가 요청한 이미지의 명으로 된 PresignedUrl을 받아 이미지를 업로드한다.
      */
-    @GetMapping("/presigned-url")
-    public ResponseEntity<String> generatePresignedUrl(@ModelAttribute GetPresignedUrlRequestDto request) {
+    @PostMapping("/presigned-url")
+    public ResponseEntity<String> generatePresignedUrl(@RequestBody GetPresignedUrlRequestDto request) {
         log.info("filename : {}", request.getFileName());
         String presignedUrl = s3Service.getPresignedUrl(request);
         return ResponseEntity.ok(presignedUrl);

@@ -1,9 +1,7 @@
 package com.example.devops.service;
 
-import com.example.devops.dto.GetPresignedUrlRequestDto;
 import com.example.devops.dto.GetUserRequestDto;
 import com.example.devops.dto.GetUserResponseDto;
-import com.example.devops.dto.PresignedUrlStatus;
 import com.example.devops.dto.SaveUserRequestDto;
 import com.example.devops.dto.SaveUserResponseDto;
 import com.example.devops.dto.UpdateUserProfileImageRequestDto;
@@ -47,13 +45,6 @@ public class UserService {
     public void updateUser(UpdateUserProfileImageRequestDto request) {
         User user = findUserById(request.getUserId());
         user.updateProfileImage(request.getProfileImage());
-    }
-
-    private static GetPresignedUrlRequestDto createPresignedRequest(String profileImageUrl) {
-        return GetPresignedUrlRequestDto.builder()
-            .httpMethod(PresignedUrlStatus.PUT)
-            .fileName(profileImageUrl)
-            .build();
     }
 
     private User findUserById(Long userId) {
