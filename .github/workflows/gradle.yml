@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    environment: prod
     runs-on: ubuntu-latest
     permissions:
       contents: read
