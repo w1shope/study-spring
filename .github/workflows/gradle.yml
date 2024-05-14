@@ -25,7 +25,7 @@ jobs:
       working-directory: ./spring-devops
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew clean build -Dspring.profiles.active=prod
+      run: ./gradlew build -Plocal
       working-directory: ./spring-devops
       env:
         AWS_RDS: ${{ secrets.AWS_RDS }}
