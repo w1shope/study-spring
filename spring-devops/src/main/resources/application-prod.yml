@@ -5,6 +5,13 @@ spring:
     password: ${AWS_RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update # application 실행 시 기존 테이블 drop 후 create
+    properties:
+      hibernate:
+        format_sql: true
+
 cloud:
   aws:
     credentials:
