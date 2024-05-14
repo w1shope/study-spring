@@ -15,5 +15,14 @@ services:
     volumes:
       - mysql:/var/lib/mysql
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: redis-server --port 6379
+    hostname: hope
+    ports:
+      - "6381:6379"
+    restart: always
+
 volumes:
   mysql:
