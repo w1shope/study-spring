@@ -35,17 +35,21 @@ public class Comment extends BaseEntity {
 
     private String content;
 
-    @Builder
-    public Comment(User user, String content) {
-        this.user = user;
-        this.content = content;
-    }
-
     public void updateContent(String content) {
         this.content = content;
     }
 
     public void updateUser(User user) {
         this.user = user;
+    }
+
+    private Comment(User user, Post post, String content) {
+        this.user = user;
+        this.post = post;
+        this.content = content;
+    }
+
+    public static Comment createComment(User user, Post post, String content) {
+        return new Comment(user, post, content);
     }
 }

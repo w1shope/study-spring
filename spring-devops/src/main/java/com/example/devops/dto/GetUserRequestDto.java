@@ -1,10 +1,10 @@
 package com.example.devops.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class GetUserRequestDto {
 
     private Long userId;

@@ -22,7 +22,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<GetPostResponseDto> getPost(@RequestBody GetPostRequestDto request) {
+    public ResponseEntity<GetPostResponseDto> getPost(GetPostRequestDto request) {
         GetPostResponseDto response = postService.getPost(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

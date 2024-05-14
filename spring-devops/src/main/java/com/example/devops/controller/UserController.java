@@ -28,7 +28,7 @@ public class UserController {
      * 사용자 조회
      */
     @GetMapping
-    public ResponseEntity<GetUserResponseDto> findUser(@ModelAttribute GetUserRequestDto request) {
+    public ResponseEntity<GetUserResponseDto> findUser(GetUserRequestDto request) {
         GetUserResponseDto response = userService.getUser(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

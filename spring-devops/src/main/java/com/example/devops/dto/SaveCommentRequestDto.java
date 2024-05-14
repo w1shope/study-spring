@@ -1,11 +1,11 @@
 package com.example.devops.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class GetPostRequestDto {
+public class SaveCommentRequestDto {
 
+    private Long userId;
     private Long postId;
+    private String content;
 }
