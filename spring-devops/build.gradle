@@ -35,6 +35,13 @@ dependencies {
     //redis
     implementation("it.ozimov:embedded-redis:0.7.2")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {

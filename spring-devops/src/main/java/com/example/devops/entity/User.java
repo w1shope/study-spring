@@ -2,6 +2,8 @@ package com.example.devops.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,16 +25,19 @@ public class User extends BaseEntity {
     private Long id;
 
     private String email;
-    private String pwd;
+    private String password;
     private String username;
-
     private String profileImage;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
-    public User(String email, String pwd, String username) {
+    public User(String email, String password, String username, Role role) {
         this.email = email;
-        this.pwd = pwd;
+        this.password = password;
         this.username = username;
+        this.role = role;
     }
 
     public void updateProfileImage(String profileImage) {

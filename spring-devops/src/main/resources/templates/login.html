@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spring Boot Security</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+<div class="container my-3">
+    <h1>Spring Boot Security</h1>
+    <p>Spring Boot Security을 사용한 간단한 예제입니다.</p>
+    <form th:action="@{/login}" th:method="post">
+        <div class="mb-3">
+            <label for="email" class="form-label">사용자 Email</label>
+            <input type="text" name="email" id="email" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" name="password" id="password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+</div>
+</body>
+</html>
